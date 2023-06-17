@@ -1,6 +1,9 @@
+using API.BadVersion.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
-namespace API
+namespace API.BadVersion
 {
     public class Tests
     {
@@ -15,17 +18,24 @@ namespace API
         [Test]
         public void GetUserById()
         {
-            var request = new RestRequest("/users/2", Method.Get);                    
+            var request = new RestRequest("/users/2", Method.Get);
 
             var response = client.Execute(request);
 
             if (response.IsSuccessful)
             {
                 Console.WriteLine(response.Content.ToString());
+
+                var jsonResponse = JObject.Parse(response.Content);
+
+                var userResponseRoot = JsonConvert.DeserializeObject<User>(jsonResponse.SelectToken("$.data").ToString());
+
+                Console.WriteLine($"FirstName {userResponseRoot.FirstName}");
+
             }
             else
             {
-                Console.WriteLine("Failed: " +  response.ErrorMessage);
+                Console.WriteLine("Failed: " + response.ErrorMessage);
             }
 
         }
@@ -37,8 +47,8 @@ namespace API
 
             var body = new User
             {
-                Name = " ",
-                Password = " ",
+                FirstName = " ",
+                Email = " ",
             };
 
             request.AddBody(body);
@@ -87,11 +97,17 @@ namespace API
         {
             var request = new RestRequest("/users", Method.Post);
 
-            var body = new User
+            var user = new User
             {
-                Name = "Ivan",
-                Password = " ",
+                FirstName = "Ivan",
+                Email = "terydvbfgybnj",
+                Id = 0
             };
+
+            var body = JsonConvert.SerializeObject(user);
+
+
+            request.AddBody(body);
 
             var response = client.Execute(request);
 
@@ -103,6 +119,11 @@ namespace API
             {
                 Console.WriteLine("Failed: " + response.ErrorMessage);
             }
+
+            User userCreated = JsonConvert.DeserializeObject<User>(response.Content);
+
+
+            Assert.That(user, Is.EqualTo(userCreated));
 
         }
 
