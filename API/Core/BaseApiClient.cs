@@ -28,11 +28,7 @@ namespace API.Core
 
         public RestResponse Execute(RestRequest request)
         {
-
-            var body = request.Parameters.FirstOrDefault(p => p.Type == ParameterType.RequestBody);
-
-            logger.Info(body);
-            logger.Info(request.Resource);
+            logger.Info(request);
             var response = restClient.Execute(request);
             logger.Info(response.Content.Normalize());
             return response;
