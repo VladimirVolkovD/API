@@ -1,16 +1,13 @@
-﻿using RestSharp;
-using RestSharp.Authenticators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NLog;
+using RestSharp;
 
 namespace API.Core
 {
     internal class BaseApiClient
     {
         private RestClient restClient;
+
+        protected Logger logger = LogManager.GetCurrentClassLogger();
 
         public BaseApiClient(string url)
         {
@@ -31,13 +28,21 @@ namespace API.Core
 
         public RestResponse Execute(RestRequest request)
         {
+
+            var body = request.Parameters.FirstOrDefault(p => p.Type == ParameterType.RequestBody);
+
+            logger.Info(body);
+            logger.Info(request.Resource);
             var response = restClient.Execute(request);
+            logger.Info(response.Content.Normalize());
             return response;
         }
 
         public T Execute<T>(RestRequest request)
         {
+            logger.Info(request.Resource);
             var response = restClient.Execute<T>(request);
+            logger.Info(response.Content.Normalize());
             return response.Data;
         }
     }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace API.BadVersion.Models
+namespace Core.Configuration
 {
-    internal class CommonDataResponse<T>
-    {
-        public T Data { get; set; }
+    internal interface IConfiguration
+    {     
+        string SectionName { get; }
     }
 }
