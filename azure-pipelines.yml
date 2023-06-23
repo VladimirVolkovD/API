@@ -10,12 +10,6 @@ pool:
   name: 'Vladimir'
 
 steps:
-- task: UseDotNet@2
-  displayName: 'Install .NET 6 SDK'
-  inputs:
-    packageType: 'sdk'
-    version: '6.0.x'
-    performMultiLevelLookup: true
 
 - task: NuGetCommand@2
   displayName: 'restore NuGet, nuget task'
