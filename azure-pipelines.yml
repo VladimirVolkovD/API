@@ -28,3 +28,8 @@ steps:
   inputs:
     command: 'build'
     arguments: '--configuration Debug'
+
+- task: DotNetCoreCLI@2
+  displayName: test
+  inputs:
+    command: 'test'
