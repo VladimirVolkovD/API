@@ -9,22 +9,33 @@ trigger:
 pool:
   name: 'Vladimir'
 
-
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'x86|x64|ARM'
-  buildConfiguration: 'Release'
-  appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
-
 steps:
+- task: UseDotNet@2
+  displayName: 'Install .NET 6 SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.x'
+    performMultiLevelLookup: true
+
 - task: NuGetToolInstaller@1
+  displayName: 'Use NuGet 6.x'
+  inputs:
+    versionSpec: 6.x
 
 - task: NuGetCommand@2
+  displayName: 'restore NuGet, nuget task'
   inputs:
+    command: 'restore'
     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
+  displayName: 'restore NuGet, DotNetCoreCLI task'
   inputs:
-    platform: 'x86'
-    solution: '$(solution)'
-    configuration: '$(buildConfiguration)'
+    command: 'restore'
+    projects: '**/*/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: build
+  inputs:
+    command: 'build'
+    arguments: '--configuration Debug'
