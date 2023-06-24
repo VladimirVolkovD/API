@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  name: 'Azure Pipelines'
+  name: 'Artem'
 
 steps:
 - task: NuGetCommand@2
